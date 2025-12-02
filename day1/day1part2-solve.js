@@ -1,45 +1,32 @@
 const fs = require('fs');
-const readline = require('readline');
-
-function checkFlow(num) {
-    // checks for overflow or underflow and returns the corrected number if true
-    // if neither are true, returns the number originally inputted
-    if (num < 0) { return num + 100 };
-    if (num >= 100) { return num - 100 };
-    return num
-};
 
 async function decoder() {
     // current position
-    currPos = 50
+    let currPos = 50
     // how many times the current position passes 0
-    zeroCount = 0
+    let zeroCount = 0
 
     // load the file
-    const fileStream = fs.createReadStream(`${__dirname}/day1input.csv`)
-    const decoder = readline.createInterface(fileStream);
+    const file = fs.readFileSync(`${__dirname}/day1input.csv`, 'utf-8')
+    const decoder = file.split('\r\n')
 
     // read all lines of the file
-    for await (direction of decoder) {
-        moveNum = Number(direction.slice(1));
-        const operator = direction.slice(0, 1);
+    for (direction of decoder) {
+        let moveNum = (direction.slice(0,1) == "L") ? -Number(direction.slice(1)) : Number(direction.slice(1))
         
-        // add or subtract the direction from current position
-        currPos = (operator == "L") ? (currPos - moveNum) : (currPos + moveNum)
+        let newPos = currPos + moveNum
 
-        if (currPos == 0) {
-            zeroCount += 1
-        } else if (currPos > 99) {
-            while (currPos > 99) {
+        while (newPos < 0 || newPos > 99) {
+            if (newPos > 99) {
                 zeroCount += 1
-                currPos -= 100
-            }
-        } else if (currPos < 0) {
-            while (currPos < 0) {
+                newPos -= 100
+            } else if (newPos < 0) {
                 zeroCount += 1
-                currPos += 100
+                newPos += 100
             }
         }
+
+        currPos = newPos
 
     }
 
@@ -49,7 +36,9 @@ async function decoder() {
 
 decoder();
 
-// ANSWER: 7282 - wrong, too high
-// ANSWER: 6744 - wrong, didn't give a too high/low
-// ANSWER: 6244 - wrong
-// ANSWER: 6643 - wrong
+// 7282 - wrong, too high
+// 6744 - wrong, didn't give a too high/low
+// 6244 - wrong
+// 6643 - wrong
+// 6216 - wrong
+// ANSWER: 6223
