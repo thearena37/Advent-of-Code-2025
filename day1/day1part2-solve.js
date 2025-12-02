@@ -1,6 +1,13 @@
 const fs = require('fs');
 const readline = require('readline');
 
+function checkFlow(num) {
+    // checks for overflow or underflow and returns the corrected number if true
+    // if neither are true, returns the number originally inputted
+    if (num < 0) { return num + 100 };
+    if (num >= 100) { return num - 100 };
+    return num
+};
 
 async function decoder() {
     // current position
@@ -16,43 +23,21 @@ async function decoder() {
     for await (direction of decoder) {
         moveNum = Number(direction.slice(1));
         const operator = direction.slice(0, 1);
-        ///////////////////////console.log(`direction: ${direction}`)
 
-        // determine how many full rotations was made in one direction
+        // add the amount of full rotations to zero counter and remove those rotations from move number 
         if (moveNum > 99) {
             zeroCount += Math.trunc(moveNum/100)
-            ///////////////////////console.log(`full rotation add to zeroCount: ${zeroCount}`)
+            moveNum = moveNum % 100
         }
-
+        
         // add or subtract the direction from current position
-        if (operator == "L") {
-            currPos = currPos - moveNum
-            ///////////////////////console.log(`new currPos: ${currPos}`)
-            // check if arrow passed 0
-            if (currPos < 0) {
-                currPos += 100
-                // increment zeroCount
-                zeroCount += 1
-                ///////////////////////console.log("added to zeroCount")
-                ///////////////////////console.log(`adjusted currPos: ${currPos}`)
-            }
-        }
-        else {
-            currPos = currPos + moveNum
-            ///////////////////////console.log(`new currPos: ${currPos}`)
-            // check if arrow passed 99
-            if (currPos > 99) {
-                currPos -= 100
-                // increment zeroCount
-                zeroCount += 1
-                ///////////////////////console.log("added to zeroCount")
-                ///////////////////////console.log(`adjusted currPos: ${currPos}`)
+        currPos = (operator == "L") ? (currPos - moveNum) : (currPos + moveNum)
 
-            }
-        }
+        if (currPos > 99 || currPos < 1) { zeroCount += 1 }
 
-        if (currPos == 0) { zeroCount += 1 }
-        ///////////////////////console.log(`total zeroCount: ${zeroCount}`)
+        currPos = checkFlow(currPos)
+
+        // console.log(zeroCount)
     }
 
     console.log (`Password is: ${zeroCount}`)
@@ -63,3 +48,4 @@ decoder();
 
 // ANSWER: 7282 - wrong, too high
 // ANSWER: 6744 - wrong, didn't give a too high/low
+// ANSWER: 6244
