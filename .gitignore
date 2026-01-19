@@ -3,4 +3,5 @@ day1/day1input-test.csv
 day1/day1-instructions.md
 instructions/*
 inputs/*
+node_modules/*
 .vscode
