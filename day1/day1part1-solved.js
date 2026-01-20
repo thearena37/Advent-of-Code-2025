@@ -17,7 +17,7 @@ async function decoder() {
     zeroCount = 0
 
     // reading the file
-    const fileStream = fs.createReadStream(`${__dirname}/day1input.csv`)
+    const fileStream = fs.createReadStream(`${__dirname}/../inputs/day1input.csv`)
     const decoder = readline.createInterface(fileStream);
 
     // read all lines of the file
