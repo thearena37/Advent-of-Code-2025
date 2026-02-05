@@ -21,11 +21,11 @@ function checkAdjacents(row, col) {
         for (cOff of colOffset) {
             // not adjacent, skip
             if (rOff === 0 && cOff === 0) { continue; }
-            
+
             // if the adjacent coordinate if off the map or the space is empty, increment emptySpaces
             if (
-                paperRolls[row + rOff]?.[col + cOff] === undefined ||
-                paperRolls[row + rOff][col + cOff] === "."
+                floorMap[row + rOff]?.[col + cOff] === undefined ||
+                floorMap[row + rOff][col + cOff] === "."
             ) { emptySpaces += 1; }
         }
     }
@@ -33,26 +33,35 @@ function checkAdjacents(row, col) {
 }
 
 function checkCoordinates() {
-    let movableRolls = 0;
+    let movedRolls = 0;
+    let movableRolls = 1;
 
-    // check every coordinate (both for loops)
-    for (let row = 0; row < floorMap.length; row++) {
-        for (let col = 0; col < floorMap[row].length; col++) {
-            // skip coordinates that are already empty
-            if (floorMap[row][col] === ".") { continue; }
+    while (movableRolls > 0) {
+        // reset rolls moved over last round
+        movableRolls = 0
 
-            // check each adjacent
-            let emptyAdjacents = checkAdjacents(row, col);
-
-            // if there are more than 4 empty cells, increment movableRolls
-            if (emptyAdjacents > 4) {
-                movableRolls += 1;
-                floorMap[row][col] = "X";
+        // check every coordinate (both for loops)
+        for (let row = 0; row < floorMap.length; row++) {
+            for (let col = 0; col < floorMap[row].length; col++) {
+                // skip coordinates that are already empty
+                if (floorMap[row][col] === ".") { continue; }
+                
+                // check each adjacent
+                let emptyAdjacents = checkAdjacents(row, col);
+                
+                // if there are more than 4 empty cells, increment movedRolls and change coordinate to empty
+                if (emptyAdjacents > 4) {
+                    movableRolls += 1;
+                    floorMap[row][col] = ".";
+                }
             }
         }
-    }
 
-    console.log(movableRolls);
+        // add movedRolls to movableRolls
+        movedRolls += movableRolls
+    }
+        
+    console.log(movedRolls);
 }
 
 checkCoordinates();
