@@ -34,24 +34,33 @@ function checkAdjacents(row, col) {
 
 function checkCoordinates() {
     let movedRolls = 0;
+    let movableRolls = 1;
 
-    // check every coordinate (both for loops)
-    for (let row = 0; row < floorMap.length; row++) {
-        for (let col = 0; col < floorMap[row].length; col++) {
-            // skip coordinates that are already empty
-            if (floorMap[row][col] === ".") { continue; }
+    while (movableRolls > 0) {
+        // reset rolls moved over last round
+        movableRolls = 0
 
-            // check each adjacent
-            let emptyAdjacents = checkAdjacents(row, col);
-
-            // if there are more than 4 empty cells, increment movedRolls and change coordinate to empty
-            if (emptyAdjacents > 4) {
-                movedRolls += 1;
-                floorMap[row][col] = "X";
+        // check every coordinate (both for loops)
+        for (let row = 0; row < floorMap.length; row++) {
+            for (let col = 0; col < floorMap[row].length; col++) {
+                // skip coordinates that are already empty
+                if (floorMap[row][col] === ".") { continue; }
+                
+                // check each adjacent
+                let emptyAdjacents = checkAdjacents(row, col);
+                
+                // if there are more than 4 empty cells, increment movedRolls and change coordinate to empty
+                if (emptyAdjacents > 4) {
+                    movableRolls += 1;
+                    floorMap[row][col] = ".";
+                }
             }
         }
-    }
 
+        // add movedRolls to movableRolls
+        movedRolls += movableRolls
+    }
+        
     console.log(movedRolls);
 }
 
